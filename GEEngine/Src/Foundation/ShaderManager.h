@@ -5,6 +5,7 @@
 #include "Core.h"
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 
 enum class ShaderType {
     VERTEX,
@@ -186,6 +187,9 @@ public:
     }
 
     void updateTexturePS(Core* core, const std::string& shaderName, const std::string& textureName, int heapOffset) {
+        if (heapOffset < 0) {
+            throw std::runtime_error("Invalid texture descriptor: " + textureName);
+        }
         UINT bindPoint = shaders[shaderName].textureBindPoints[textureName];
         D3D12_GPU_DESCRIPTOR_HANDLE handle = core->srvHeap.gpuHandle;
 

@@ -5,6 +5,7 @@
 #include "Core.h"
 #include <string>
 #include <map>
+#include <stdexcept>
 
 class Texture {
 
@@ -17,27 +18,12 @@ public:
 		int width = 0;
 		int height = 0;
 		int channels = 0;
-		unsigned char* texels = stbi_load(filename.c_str(), &width, &height, &channels, 0);
+		unsigned char* texels = stbi_load(filename.c_str(), &width, &height, &channels, STBI_rgb_alpha);
 		if (!texels)
 		{
-			OutputDebugStringA(("Failed to load texture: " + filename + "\n").c_str());
-			return;
+			throw std::runtime_error("Failed to load texture: " + filename);
 		}
-		if (channels == 3) {
-			channels = 4;
-			unsigned char* texelsWithAlpha = new unsigned char[width * height * channels];
-			for (int i = 0; i < (width * height); i++) {
-				texelsWithAlpha[i * 4] = texels[i * 3];
-				texelsWithAlpha[(i * 4) + 1] = texels[(i * 3) + 1];
-				texelsWithAlpha[(i * 4) + 2] = texels[(i * 3) + 2];
-				texelsWithAlpha[(i * 4) + 3] = 255;
-			}
-			// Initialize texture using width, height, channels, and texelsWithAlpha
-			delete[] texelsWithAlpha;
-		}
-		else {
-			// Initialize texture using width, height, channels, and texels
-		}
+		channels = 4;
 
 		// Create GPU Texture
 		D3D12_HEAP_PROPERTIES heapProps = {};
@@ -62,8 +48,8 @@ public:
 		);
 
 		if (FAILED(hr)) {
-			OutputDebugStringA("CreateCommittedResource failed in Texture\n");
-			return;
+			stbi_image_free(texels);
+			throw std::runtime_error("Failed to create texture: " + filename);
 		}
 
 		// 
@@ -128,7 +114,13 @@ public:
 			return it->second;
 
 		Texture* t = new Texture();
-		t->init(core, file);
+		try {
+			t->init(core, file);
+		}
+		catch (...) {
+			delete t;
+			throw;
+		}
 
 		textures[name] = t;
 		return t;

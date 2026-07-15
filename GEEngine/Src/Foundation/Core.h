@@ -172,14 +172,12 @@ public:
         computeQueueDesc.Type = D3D12_COMMAND_LIST_TYPE_COMPUTE;
         device->CreateCommandQueue(&computeQueueDesc, IID_PPV_ARGS(&computeQueue));
 
-        createRootSignature();
-
         // Create Swapchain
         DXGI_SWAP_CHAIN_DESC1 scDesc;
         memset(&scDesc, 0, sizeof(DXGI_SWAP_CHAIN_DESC1));
         scDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-        scDesc.Width = width;
-        scDesc.Height = height;
+        scDesc.Width = _width;
+        scDesc.Height = _height;
         scDesc.SampleDesc.Count = 1; // MSAA here
         scDesc.SampleDesc.Quality = 0;
         scDesc.BufferCount = 2;
@@ -319,7 +317,7 @@ public:
 
         D3D12_DESCRIPTOR_RANGE srvRange = {};
         srvRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-        srvRange.NumDescriptors = 8; // number of SRVs (t0–t7)
+        srvRange.NumDescriptors = 8; // number of SRVs (t0-t7)
         srvRange.BaseShaderRegister = 0; // starting at t0
         srvRange.RegisterSpace = 0;
         srvRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;

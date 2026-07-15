@@ -11,7 +11,9 @@ struct PS_INPUT
 
 float4 PS(PS_INPUT input) : SV_Target0
 {
-    return (1, 0, 0, 1);
-    float4 colour = tex.Sample(samplerLinear, input.TexCoords);
-    return float4(colour.rgb, 1.0);
+    float3 normal = abs(normalize(input.Normal));
+    float3 colour = normal.x * float3(1.0, 0.0, 0.0)
+                  + normal.y * float3(0.0, 1.0, 0.0)
+                  + normal.z * float3(1.0, 1.0, 0.0);
+    return float4(colour, 1.0);
 }

@@ -18,7 +18,7 @@ public:
 	int mousey;
 	bool mouseButtons[3];
 
-	Window() {}
+	Window() : keys{}, mousex(0), mousey(0), mouseButtons{} {}
 	~Window() {}
 
 	void create(int window_x = 0, int window_y = 0,

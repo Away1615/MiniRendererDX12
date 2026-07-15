@@ -13,6 +13,7 @@
 #include "Src/Polygon/AnimatedModel.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    try {
 
     Window win;
     win.create(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, "My Window");
@@ -110,4 +111,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
     core.flushGraphicsQueue();
     return 0;
+    }
+    catch (const std::exception& error) {
+        MessageBoxA(nullptr, error.what(), "GEEngine Error", MB_OK | MB_ICONERROR);
+        return 1;
+    }
 }
